@@ -1,90 +1,119 @@
 package com.epam.dashboard.service.impl;
 
 import com.epam.dashboard.dto.BoardDto;
+import com.epam.dashboard.dto.NoteDto;
 import com.epam.dashboard.model.Board;
-import com.epam.dashboard.model.Metadata;
 import com.epam.dashboard.model.Note;
-import com.epam.dashboard.model.User;
-import com.epam.dashboard.model.enums.Gender;
-import com.epam.dashboard.model.enums.NoteStatus;
 import com.epam.dashboard.repository.BoardRepository;
-import com.epam.dashboard.repository.NoteRepository;
-import com.epam.dashboard.repository.UserRepository;
 import com.epam.dashboard.service.BoardService;
+import com.epam.dashboard.util.BoardMapper;
+import com.epam.dashboard.util.NoteMapper;
 import lombok.AllArgsConstructor;
-import org.apache.commons.beanutils.BeanUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-@Service
+@Slf4j
 @AllArgsConstructor
+@Service
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
-    private final NoteRepository noteRepository;
-    private final UserRepository userRepository;
+
+    private final BoardMapper boardMapper = BoardMapper.INSTANCE;
+    private final NoteMapper noteMapper = NoteMapper.INSTANCE;
 
     @Override
-    public Board create(BoardDto boardDto) throws InvocationTargetException, IllegalAccessException {
-        Board board = new Board();
-        BeanUtils.copyProperties(board, boardDto);
-        return boardRepository.save(board);
+    public BoardDto findById(String id) {
+        if (Objects.isNull(id)) {
+            return null;
+        }
+
+        Board board = boardRepository.findById(id).orElse(null);
+        return Objects.nonNull(board) ? boardMapper.mapBoardToBoardDto(board) : null;
     }
 
     @Override
-    public Board createTestBoard() {
-        LocalDate dateNow = LocalDate.now();
-
-        User user = User.builder()
-                .firstName("First name")
-                .lastName("Last name")
-                .gender(Gender.MALE)
-                .dateOfBirth(dateNow.minusYears(20))
-                .username("Username")
-                .email("Unique email")
-                .password("Password")
-                .build();
-        userRepository.save(user);
-
-        Metadata metadata = new Metadata(user, dateNow, dateNow);
-
-        Note note = Note.builder()
-                .title("Default title")
-                .content("Default content")
-                .status(NoteStatus.TODO)
-                .deadline(dateNow.plusMonths(1))
-                .metadata(metadata)
-                .build();
-        noteRepository.save(note);
-
-        Board board = Board.builder()
-                .title("Default title")
-                .desc("Default description")
-                .maxSize(100)
-                .notes(Collections.singletonList(note))
-                .metadata(metadata)
-                .build();
-
-        return boardRepository.save(board);
+    public BoardDto findByTitle(String title) {
+        Board board = boardRepository.findByTitle(title);
+        return Objects.nonNull(board) ? boardMapper.mapBoardToBoardDto(board) : null;
     }
 
     @Override
-    public Board findByTitle(String title) {
-        return boardRepository.findByTitle(title)
-                .orElseThrow(() -> new RuntimeException("Board is not found by provided title"));
+    public NoteDto findNoteById(String boardId, String noteId) {
+        List<Note> notes = boardRepository.findNotesById(boardId);
+        if (Objects.isNull(notes) || notes.isEmpty()) {
+            throw new RuntimeException("Note is not found by provided id");
+        }
+
+        return noteMapper.mapNoteToNoteDto(notes.stream()
+                .filter(note -> note.getId().equals(noteId))
+                .findFirst().orElseThrow(() -> new RuntimeException("Note is not found by provided id")));
     }
 
     @Override
-    public List<Board> findAll() {
-        return boardRepository.findAll();
+    public boolean isBoardExistsWithTitle(String title) {
+        return Objects.nonNull(boardRepository.findByTitle(title));
     }
 
     @Override
-    public List<Note> findNotesByBoardTitle(String title) {
-        return boardRepository.findNotesByTitle(title);
+    public List<BoardDto> findAll() {
+        List<Board> boards = boardRepository.findAll();
+        return Objects.nonNull(boards) ? boardMapper.mapBoardsToBoardDTOs(boards) : null;
     }
+
+    @Override
+    public List<NoteDto> findNotesByBoardId(String id) {
+        List<Note> notes = boardRepository.findNotesById(id);
+        return Objects.nonNull(notes) ? noteMapper.mapNotesToNoteDTOs(notes) : null;
+    }
+
+    @Override
+    public BoardDto create(BoardDto boardDto) {
+        Board board = boardMapper.mapBoardDtoToBoard(boardDto);
+        boardRepository.insert(board);
+        return boardMapper.mapBoardToBoardDto(board);
+    }
+
+    @Override
+    public NoteDto addNoteByBoardId(String id, NoteDto noteDto) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Board is not found by provided id"));
+        board.addNote(noteMapper.mapNoteDtoToNote(noteDto));
+        boardRepository.save(board);
+        return noteDto;
+    }
+
+    @Override
+    public BoardDto updateBoard(String boardId, BoardDto boardDto) {
+        return null;
+    }
+
+    @Override
+    public NoteDto updateNote(String boardId, String noteId, NoteDto noteDto) {
+        return null;
+    }
+
+    @Override
+    public void deleteAllBoards() {
+
+    }
+
+    @Override
+    public void deleteBoardById(String id) {
+
+    }
+
+    @Override
+    public void deleteAllNotesByBoardId(String id) {
+
+    }
+
+    @Override
+    public void deleteNoteByBoardAndNoteId(String boardId, String noteId) {
+
+    }
+
 }

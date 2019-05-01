@@ -16,7 +16,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'mvn test'
+                sh 'mvn clean test -P test,in-memory-mongodb'
             }
             post {
                 always {

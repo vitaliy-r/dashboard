@@ -1,12 +1,10 @@
 package com.epam.dashboard.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.index.Indexed;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -14,7 +12,7 @@ import java.time.LocalDate;
 public class Metadata {
 
     private User creator;
-    private LocalDate lastModifiedDate;
-    private LocalDate creationDate;
+    private LocalDateTime lastModifiedDate;
+    private LocalDateTime creationDate;
 
 }

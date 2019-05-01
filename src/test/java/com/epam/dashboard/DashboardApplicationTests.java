@@ -1,4 +1,4 @@
-package com.epam.dashboard.dashboard;
+package com.epam.dashboard;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
