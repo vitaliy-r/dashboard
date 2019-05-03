@@ -1,4 +1,4 @@
 package com.epam.dashboard.dto.validation.group;
 
-public interface OnCreate {
+public interface OnCreate extends GeneralGroup {
 }

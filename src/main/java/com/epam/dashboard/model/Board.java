@@ -20,7 +20,7 @@ import java.util.Objects;
 public class Board {
 
     @Id
-    public String id;
+    private String id;
     @Indexed(unique = true)
     private String title;
     private String desc;

@@ -5,7 +5,6 @@ import com.epam.dashboard.model.Board;
 import com.epam.dashboard.model.Metadata;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDateTime;
@@ -19,11 +18,9 @@ public interface BoardMapper {
     @Mapping(target = "boardId", ignore = true)
     BoardDto mapBoardToBoardDto(Board board);
 
-    @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "notes", ignore = true),
-            @Mapping(target = "metadata", expression = "java(formCreationMetadata())")
-    })
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "notes", ignore = true)
+    @Mapping(target = "metadata", expression = "java(formCreationMetadata())")
     Board mapBoardDtoToBoard(BoardDto boardDto);
 
     List<BoardDto> mapBoardsToBoardDTOs(List<Board> boards);

@@ -22,6 +22,10 @@ public class IdValidatorImpl implements ConstraintValidator<IdValidator, String>
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (Objects.isNull(value)) {
+            return true;
+        }
+
         if (Objects.equals(dtoClass, BoardDto.class)) {
             return Objects.nonNull(boardService.findById(value));
         } else if (Objects.equals(dtoClass, UserDto.class)) {

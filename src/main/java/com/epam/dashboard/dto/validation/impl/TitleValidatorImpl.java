@@ -1,7 +1,6 @@
 package com.epam.dashboard.dto.validation.impl;
 
 import com.epam.dashboard.dto.BoardDto;
-import com.epam.dashboard.dto.validation.IdValidator;
 import com.epam.dashboard.dto.validation.UniqueTitleValidator;
 import com.epam.dashboard.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;

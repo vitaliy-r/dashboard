@@ -19,7 +19,7 @@ import java.time.LocalDate;
 public class User {
 
     @Id
-    public String id;
+    private String id;
     private String firstName;
     private String lastName;
     private Gender gender;
