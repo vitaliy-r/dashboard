@@ -3,6 +3,7 @@ package com.epam.dashboard.dto.validation.impl;
 import com.epam.dashboard.dto.BoardDto;
 import com.epam.dashboard.dto.validation.UniqueTitleValidator;
 import com.epam.dashboard.service.BoardService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
@@ -18,13 +19,14 @@ public class TitleValidatorImpl implements ConstraintValidator<UniqueTitleValida
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (Objects.isNull(value)) {
-            return true;
+        if (StringUtils.isBlank(value)) {
+            return true; // already validated by @NotBlank annotation
         }
 
         if (Objects.equals(dtoClass, BoardDto.class)) {
             return boardService.isBoardExistsWithTitle(value);
         }
+
         return false;
     }
 

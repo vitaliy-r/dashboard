@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@RestController
 @RequiredArgsConstructor
+@RestController
 @RequestMapping("/board")
 public class BoardController implements BoardApi {
 
@@ -51,25 +51,22 @@ public class BoardController implements BoardApi {
         return boardService.create(boardDto);
     }
 
-    @PostMapping("/{boardId}")
+    @PostMapping("/note")
     @Override
-    public BoardDto createNote(@PathVariable String boardId,
-                              @RequestBody @Validated(OnCreate.class) NoteDto noteDto) {
-        return boardService.addNoteByBoardId(boardId, noteDto);
+    public BoardDto createNote(@RequestBody @Validated(OnCreate.class) NoteDto noteDto) {
+        return boardService.addNoteByBoardId(noteDto);
     }
 
-    @PutMapping("/{boardId}")
+    @PutMapping
     @Override
-    public BoardDto updateBoard(@PathVariable String boardId,
-                                @RequestBody @Validated(OnUpdate.class) BoardDto newBoardDto) {
-        return boardService.updateBoard(boardId, newBoardDto);
+    public BoardDto updateBoard(@RequestBody @Validated(OnUpdate.class) BoardDto newBoardDto) {
+        return boardService.updateBoard(newBoardDto);
     }
 
-    @PutMapping("/{boardId}/{noteId}")
+    @PutMapping("/note")
     @Override
-    public BoardDto updateNote(@PathVariable String boardId, @PathVariable String noteId,
-                              @RequestBody @Validated(OnUpdate.class) NoteDto newNoteDto) {
-        return boardService.updateNote(boardId, noteId, newNoteDto);
+    public BoardDto updateNote(@RequestBody @Validated(OnUpdate.class) NoteDto newNoteDto) {
+        return boardService.updateNote(newNoteDto);
     }
 
     @DeleteMapping

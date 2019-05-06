@@ -34,33 +34,33 @@ public interface BoardApi {
     @ApiResponse(code = 200, message = "OK", response = NoteDto.class)
     NoteDto getNote(String boardId, String noteId);
 
-    @ApiOperation(value = "Create board from request parameter")
+    @ApiOperation(value = "Create board from provided request parameter")
     @ApiResponses({
             @ApiResponse(code = 201, message = "Created", response = BoardDto.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
     BoardDto createBoard(BoardDto boardDto);
 
-    @ApiOperation(value = "Create note from request parameter")
+    @ApiOperation(value = "Create note from provided request parameter")
     @ApiResponses({
             @ApiResponse(code = 201, message = "Created", response = BoardDto.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    BoardDto createNote(String boardId, NoteDto noteDto);
+    BoardDto createNote(NoteDto noteDto);
 
-    @ApiOperation(value = "Update board from provided request dto parameter and board id")
+    @ApiOperation(value = "Update board from provided request dto parameter")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK", response = BoardDto.class),
+            @ApiResponse(code = 201, message = "Created", response = BoardDto.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    BoardDto updateBoard(String boardId, BoardDto newBoardDto);
+    BoardDto updateBoard(BoardDto newBoardDto);
 
-    @ApiOperation(value = "Update note from provided request dto parameter and board&note id")
+    @ApiOperation(value = "Update note from provided request dto parameter")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK", response = BoardDto.class),
+            @ApiResponse(code = 201, message = "Created", response = BoardDto.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    BoardDto updateNote(String boardId, String noteId, NoteDto newNoteDto);
+    BoardDto updateNote(NoteDto newNoteDto);
 
     @ApiOperation(value = "Delete all boards from database")
     @ApiResponse(code = 204, message = "No Content")

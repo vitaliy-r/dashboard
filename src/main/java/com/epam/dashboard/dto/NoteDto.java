@@ -32,6 +32,7 @@ public class NoteDto {
     private String boardId;
 
     @ApiModelProperty(notes = "Note generated id")
+    @JsonProperty(access = WRITE_ONLY)
     @Null(message = "Note id must be null", groups = OnCreate.class)
     @NotBlank(message = "Note id must not be null or empty", groups = OnUpdate.class)
     private String noteId;

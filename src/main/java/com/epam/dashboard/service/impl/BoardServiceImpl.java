@@ -2,6 +2,8 @@ package com.epam.dashboard.service.impl;
 
 import com.epam.dashboard.dto.BoardDto;
 import com.epam.dashboard.dto.NoteDto;
+import com.epam.dashboard.exception.InvalidIdException;
+import com.epam.dashboard.exception.ObjectNotFoundInDatabaseException;
 import com.epam.dashboard.model.Board;
 import com.epam.dashboard.model.Note;
 import com.epam.dashboard.repository.BoardRepository;
@@ -11,9 +13,9 @@ import com.epam.dashboard.util.NoteMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
-import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -24,85 +26,79 @@ import java.util.Objects;
 @Service
 public class BoardServiceImpl implements BoardService {
 
+    private static final BoardMapper boardMapper = Mappers.getMapper(BoardMapper.class);
+    private static final NoteMapper noteMapper = Mappers.getMapper(NoteMapper.class);
     private final BoardRepository boardRepository;
-
-    private static final BoardMapper boardMapper = BoardMapper.INSTANCE;
-    private static final NoteMapper noteMapper = NoteMapper.INSTANCE;
 
     @Override
     public BoardDto findById(String id) {
-        if (Objects.isNull(id)) {
-            return null;
-        }
+        validateIDs(id);
 
-        Board board = boardRepository.findById(id).orElse(null);
-        return Objects.nonNull(board) ? boardMapper.mapBoardToBoardDto(board) : null;
+        Board board = getBoardByIdOrThrowException(id);
+
+        return boardMapper.mapBoardToBoardDto(board);
     }
 
     @Override
     public NoteDto findNoteById(String boardId, String noteId) {
         validateIDs(boardId, noteId);
 
-        List<Note> notes = boardRepository.findNotesById(boardId);
-        if (Objects.isNull(notes) || notes.isEmpty()) {
-            throw new RuntimeException("Note is not found by provided id");
-        }
+        List<Note> notes = getBoardByIdOrThrowException(boardId).getNotes();
+        Note note = getNoteByIdOrThrowException(notes, noteId);
 
-        return noteMapper.mapNoteToNoteDto(getNoteByIdOrThrowException(notes, noteId));
+        return noteMapper.mapNoteToNoteDto(note);
     }
 
     @Override
     public boolean isBoardExistsWithTitle(String title) {
-        return Objects.nonNull(boardRepository.findByTitle(title));
+        return boardRepository.findByTitle(title).isPresent();
     }
 
     @Override
     public List<BoardDto> findAll() {
         List<Board> boards = boardRepository.findAll();
-        return Objects.nonNull(boards) ? boardMapper.mapBoardsToBoardDTOs(boards) : null;
+        return Objects.nonNull(boards) ? boardMapper.mapBoardsToBoardDTOs(boards) : Collections.emptyList();
     }
 
     @Override
     public List<NoteDto> findNotesByBoardId(String id) {
-        if (StringUtils.isBlank(id)) {
-            return Collections.emptyList();
-        }
+        validateIDs(id);
 
-        List<Note> notes = boardRepository.findNotesById(id);
-        return Objects.nonNull(notes) ? noteMapper.mapNotesToNoteDTOs(notes) : null;
+        List<Note> notes = getBoardByIdOrThrowException(id).getNotes();
+
+        return Objects.nonNull(notes) ? noteMapper.mapNotesToNoteDTOs(notes) : Collections.emptyList();
     }
 
     @Override
     public BoardDto create(BoardDto boardDto) {
-        Board board = boardMapper.mapBoardDtoToBoard(boardDto);
-        boardRepository.insert(board);
-
+        Board board = boardRepository.insert(boardMapper.mapBoardDtoToBoard(boardDto));
         return boardMapper.mapBoardToBoardDto(board);
     }
 
     @Override
-    public BoardDto addNoteByBoardId(String boardId, NoteDto noteDto) {
-        Board board = getBoardByIdOrThrowException(boardId);
+    public BoardDto addNoteByBoardId(NoteDto noteDto) {
+        Board board = getBoardByIdOrThrowException(noteDto.getBoardId());
         board.addNote(noteMapper.mapNoteDtoToNote(noteDto));
 
         return boardMapper.mapBoardToBoardDto(boardRepository.save(board));
     }
 
     @Override
-    public BoardDto updateBoard(String boardId, BoardDto boardDto) {
-        Board board = getBoardByIdOrThrowException(boardId);
-        board.setTitle(boardDto.getTitle());
-        board.setDesc(boardDto.getDesc());
-        board.setMaxSize(boardDto.getMaxSize());
-        board.getMetadata().setLastModifiedDate(LocalDateTime.now());
+    public BoardDto updateBoard(BoardDto boardDto) {
+        Board oldBoard = getBoardByIdOrThrowException(boardDto.getBoardId());
 
-        return boardMapper.mapBoardToBoardDto(boardRepository.save(board));
+        Board newBoard = boardMapper.mapBoardDtoToBoard(boardDto);
+        newBoard.setNotes(oldBoard.getNotes());
+        newBoard.setMetadata(oldBoard.getMetadata());
+        newBoard.getMetadata().setLastModifiedDate(LocalDateTime.now());
+
+        return boardMapper.mapBoardToBoardDto(boardRepository.save(newBoard));
     }
 
     @Override
-    public BoardDto updateNote(String boardId, String noteId, NoteDto noteDto) {
-        Board board = getBoardByIdOrThrowException(boardId);
-        Note noteToReplace = getNoteByIdOrThrowException(board.getNotes(), noteId);
+    public BoardDto updateNote(NoteDto noteDto) {
+        Board board = getBoardByIdOrThrowException(noteDto.getBoardId());
+        Note noteToReplace = getNoteByIdOrThrowException(board.getNotes(), noteDto.getNoteId());
         int elemIndex = board.getNotes().indexOf(noteToReplace);
 
         Note newNote = noteMapper.mapNoteDtoToNoteUpdateMethod(noteDto);
@@ -122,7 +118,8 @@ public class BoardServiceImpl implements BoardService {
     public void deleteBoardById(String id) {
         validateIDs(id);
 
-        boardRepository.deleteById(id);
+        Board board = getBoardByIdOrThrowException(id);
+        boardRepository.delete(board);
     }
 
     @Override
@@ -149,20 +146,25 @@ public class BoardServiceImpl implements BoardService {
     private void validateIDs(String... ids) {
         for (String id : ids) {
             if (StringUtils.isBlank(id)) {
-                throw new InvalidParameterException("Id cannot be null or empty");
+                throw new InvalidIdException();
             }
         }
     }
 
     private Board getBoardByIdOrThrowException(String boardId) {
         return boardRepository.findById(boardId)
-                .orElseThrow(() -> new RuntimeException("Board is not found by provided id"));
+                .orElseThrow(() -> new ObjectNotFoundInDatabaseException(String.format("Board is not found by id: %s", boardId)));
     }
 
     private Note getNoteByIdOrThrowException(List<Note> notes, String noteId) {
+        if (Objects.isNull(notes) || notes.isEmpty()) {
+            throw new ObjectNotFoundInDatabaseException(String.format("No notes found by id: %s", noteId));
+        }
+
         return notes.stream()
                 .filter(note -> StringUtils.equals(note.getId(), noteId))
-                .findFirst().orElseThrow(() -> new RuntimeException("Note is not found by provided id"));
+                .findFirst()
+                .orElseThrow(() -> new ObjectNotFoundInDatabaseException(String.format("Note is not found by id: %s", noteId)));
     }
 
 }

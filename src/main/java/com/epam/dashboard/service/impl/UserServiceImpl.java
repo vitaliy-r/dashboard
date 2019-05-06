@@ -1,48 +1,81 @@
 package com.epam.dashboard.service.impl;
 
 import com.epam.dashboard.dto.UserDto;
+import com.epam.dashboard.exception.InvalidIdException;
+import com.epam.dashboard.exception.ObjectNotFoundInDatabaseException;
+import com.epam.dashboard.model.User;
 import com.epam.dashboard.repository.UserRepository;
 import com.epam.dashboard.service.UserService;
+import com.epam.dashboard.util.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
-import java.security.InvalidParameterException;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
     private final UserRepository userRepository;
 
     @Override
     public UserDto findById(String id) {
-        if (StringUtils.isBlank(id)) {
-            throw new InvalidParameterException("Id cannot be null or empty");
-        }
+        validateId(id);
 
-        return
+        User user = findUserByIdOrElseThrowException(id);
+
+        return userMapper.mapUserToUserDto(user);
+    }
+
+    @Override
+    public List<UserDto> findAll() {
+        return userMapper.mapUsersToUserDTOs(userRepository.findAll());
+    }
+
+    @Override
+    public boolean isUserExistsWithEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    @Override
+    public boolean isUserExistsWithUsername(String username) {
+        return userRepository.findByUsername(username).isPresent();
     }
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        return null;
+        User user = userRepository.insert(userMapper.mapUserDtoToUser(userDto));
+        return userMapper.mapUserToUserDto(user);
     }
 
     @Override
     public UserDto updateUser(UserDto userDto) {
-        return null;
+        User user = userRepository.save(userMapper.mapUserDtoToUser(userDto));
+        return userMapper.mapUserToUserDto(user);
     }
 
     @Override
     public void deleteById(String id) {
-        if (StringUtils.isBlank(id)) {
-            throw new InvalidParameterException("Id cannot be null or empty");
-        }
+        validateId(id);
 
-        userRepository.deleteById(id);
+        User user = findUserByIdOrElseThrowException(id);
+        userRepository.delete(user);
+    }
+
+    private void validateId(String id) {
+        if (StringUtils.isBlank(id)) {
+            throw new InvalidIdException("User id cannot be null or empty");
+        }
+    }
+
+    private User findUserByIdOrElseThrowException(String id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundInDatabaseException(String.format("User is not found by id: %s", id)));
     }
 
 }

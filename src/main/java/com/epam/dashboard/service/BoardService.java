@@ -19,11 +19,11 @@ public interface BoardService {
 
     BoardDto create(BoardDto boardDto);
 
-    BoardDto addNoteByBoardId(String id, NoteDto note);
+    BoardDto addNoteByBoardId(NoteDto note);
 
-    BoardDto updateBoard(String boardId, BoardDto boardDto);
+    BoardDto updateBoard(BoardDto boardDto);
 
-    BoardDto updateNote(String boardId, String noteId, NoteDto noteDto);
+    BoardDto updateNote(NoteDto noteDto);
 
     void deleteAllBoards();
 

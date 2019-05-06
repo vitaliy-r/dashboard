@@ -3,6 +3,8 @@ package com.epam.dashboard.dto.validation.impl;
 import com.epam.dashboard.dto.BoardDto;
 import com.epam.dashboard.dto.UserDto;
 import com.epam.dashboard.dto.validation.IdValidator;
+import com.epam.dashboard.exception.InvalidIdException;
+import com.epam.dashboard.exception.ObjectNotFoundInDatabaseException;
 import com.epam.dashboard.service.BoardService;
 import com.epam.dashboard.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +24,18 @@ public class IdValidatorImpl implements ConstraintValidator<IdValidator, String>
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (Objects.isNull(value)) {
+        try {
+            if (Objects.equals(dtoClass, BoardDto.class)) {
+                boardService.findById(value);
+            } else if (Objects.equals(dtoClass, UserDto.class)) {
+                userService.findById(value);
+            }
             return true;
+        } catch (InvalidIdException e) {
+            return true; // already validated by @NotBlank annotation
+        } catch (ObjectNotFoundInDatabaseException e) {
+            return false;
         }
-
-        if (Objects.equals(dtoClass, BoardDto.class)) {
-            return Objects.nonNull(boardService.findById(value));
-        } else if (Objects.equals(dtoClass, UserDto.class)) {
-            return Objects.nonNull(userService.findById(value));
-        }
-        return false;
     }
 
     @Override
