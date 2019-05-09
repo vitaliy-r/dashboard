@@ -3,7 +3,7 @@ package com.epam.dashboard.service.impl;
 import com.epam.dashboard.dto.BoardDto;
 import com.epam.dashboard.dto.NoteDto;
 import com.epam.dashboard.exception.InvalidIdException;
-import com.epam.dashboard.exception.ObjectNotFoundInDatabaseException;
+import com.epam.dashboard.exception.RecordIsNotFoundException;
 import com.epam.dashboard.model.Board;
 import com.epam.dashboard.model.Note;
 import com.epam.dashboard.repository.BoardRepository;
@@ -153,18 +153,18 @@ public class BoardServiceImpl implements BoardService {
 
     private Board getBoardByIdOrThrowException(String boardId) {
         return boardRepository.findById(boardId)
-                .orElseThrow(() -> new ObjectNotFoundInDatabaseException(String.format("Board is not found by id: %s", boardId)));
+                .orElseThrow(() -> new RecordIsNotFoundException(String.format("Board is not found by id: %s", boardId)));
     }
 
     private Note getNoteByIdOrThrowException(List<Note> notes, String noteId) {
         if (Objects.isNull(notes) || notes.isEmpty()) {
-            throw new ObjectNotFoundInDatabaseException(String.format("No notes found by id: %s", noteId));
+            throw new RecordIsNotFoundException(String.format("No notes found by id: %s", noteId));
         }
 
         return notes.stream()
                 .filter(note -> StringUtils.equals(note.getId(), noteId))
                 .findFirst()
-                .orElseThrow(() -> new ObjectNotFoundInDatabaseException(String.format("Note is not found by id: %s", noteId)));
+                .orElseThrow(() -> new RecordIsNotFoundException(String.format("Note is not found by id: %s", noteId)));
     }
 
 }

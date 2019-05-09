@@ -4,7 +4,7 @@ import com.epam.dashboard.dto.BoardDto;
 import com.epam.dashboard.dto.UserDto;
 import com.epam.dashboard.dto.validation.IdValidator;
 import com.epam.dashboard.exception.InvalidIdException;
-import com.epam.dashboard.exception.ObjectNotFoundInDatabaseException;
+import com.epam.dashboard.exception.RecordIsNotFoundException;
 import com.epam.dashboard.service.BoardService;
 import com.epam.dashboard.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class IdValidatorImpl implements ConstraintValidator<IdValidator, String>
             return true;
         } catch (InvalidIdException e) {
             return true; // already validated by @NotBlank annotation
-        } catch (ObjectNotFoundInDatabaseException e) {
+        } catch (RecordIsNotFoundException e) {
             return false;
         }
     }

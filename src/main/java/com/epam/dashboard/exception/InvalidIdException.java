@@ -1,6 +1,6 @@
 package com.epam.dashboard.exception;
 
-public class InvalidIdException extends RuntimeException {
+public class InvalidIdException extends AbstractServiceException {
 
     private static final String DEFAULT_MESSAGE = "Id cannot be null or empty";
 
@@ -8,16 +8,16 @@ public class InvalidIdException extends RuntimeException {
         super(DEFAULT_MESSAGE);
     }
 
-    public InvalidIdException(Throwable cause) {
-        super(DEFAULT_MESSAGE, cause);
+    public InvalidIdException(String errorMsg) {
+        super(errorMsg);
     }
 
-    public InvalidIdException(String message) {
-        super(message);
+    public InvalidIdException(Exception e) {
+        super(DEFAULT_MESSAGE, e);
     }
 
-    public InvalidIdException(String message, Throwable cause) {
-        super(message, cause);
+    public InvalidIdException(String errorMsg, Exception e) {
+        super(errorMsg, e);
     }
 
 }

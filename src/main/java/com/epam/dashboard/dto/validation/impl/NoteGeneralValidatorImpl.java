@@ -3,7 +3,7 @@ package com.epam.dashboard.dto.validation.impl;
 import com.epam.dashboard.dto.NoteDto;
 import com.epam.dashboard.dto.validation.NoteGeneralValidator;
 import com.epam.dashboard.exception.InvalidIdException;
-import com.epam.dashboard.exception.ObjectNotFoundInDatabaseException;
+import com.epam.dashboard.exception.RecordIsNotFoundException;
 import com.epam.dashboard.service.BoardService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class NoteGeneralValidatorImpl implements ConstraintValidator<NoteGeneral
         List<NoteDto> notes;
         try {
             notes = boardService.findNotesByBoardId(noteDto.getBoardId());
-        } catch (InvalidIdException | ObjectNotFoundInDatabaseException e) {
+        } catch (InvalidIdException | RecordIsNotFoundException e) {
             return true; // already validated by other annotations
         }
 

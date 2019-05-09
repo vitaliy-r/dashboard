@@ -2,7 +2,7 @@ package com.epam.dashboard.service.impl;
 
 import com.epam.dashboard.dto.UserDto;
 import com.epam.dashboard.exception.InvalidIdException;
-import com.epam.dashboard.exception.ObjectNotFoundInDatabaseException;
+import com.epam.dashboard.exception.RecordIsNotFoundException;
 import com.epam.dashboard.model.User;
 import com.epam.dashboard.repository.UserRepository;
 import com.epam.dashboard.service.UserService;
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
     private User findUserByIdOrElseThrowException(String id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundInDatabaseException(String.format("User is not found by id: %s", id)));
+                .orElseThrow(() -> new RecordIsNotFoundException(String.format("User is not found by id: %s", id)));
     }
 
 }
