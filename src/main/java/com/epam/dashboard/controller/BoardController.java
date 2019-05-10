@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -46,48 +49,56 @@ public class BoardController implements BoardApi {
     }
 
     @PostMapping
+    @ResponseStatus(CREATED)
     @Override
     public BoardDto createBoard(@RequestBody @Validated(OnCreate.class) BoardDto boardDto) {
         return boardService.create(boardDto);
     }
 
     @PostMapping("/note")
+    @ResponseStatus(CREATED)
     @Override
-    public BoardDto createNote(@RequestBody @Validated(OnCreate.class) NoteDto noteDto) {
+    public NoteDto createNote(@RequestBody @Validated(OnCreate.class) NoteDto noteDto) {
         return boardService.addNoteByBoardId(noteDto);
     }
 
     @PutMapping
+    @ResponseStatus(CREATED)
     @Override
     public BoardDto updateBoard(@RequestBody @Validated(OnUpdate.class) BoardDto newBoardDto) {
         return boardService.updateBoard(newBoardDto);
     }
 
     @PutMapping("/note")
+    @ResponseStatus(CREATED)
     @Override
-    public BoardDto updateNote(@RequestBody @Validated(OnUpdate.class) NoteDto newNoteDto) {
+    public NoteDto updateNote(@RequestBody @Validated(OnUpdate.class) NoteDto newNoteDto) {
         return boardService.updateNote(newNoteDto);
     }
 
     @DeleteMapping
+    @ResponseStatus(NO_CONTENT)
     @Override
     public void deleteAllBoards() {
         boardService.deleteAllBoards();
     }
 
     @DeleteMapping("/{boardId}")
+    @ResponseStatus(NO_CONTENT)
     @Override
     public void deleteBoard(@PathVariable String boardId) {
         boardService.deleteBoardById(boardId);
     }
 
     @DeleteMapping("/{boardId}/note")
+    @ResponseStatus(NO_CONTENT)
     @Override
     public void deleteAllNotes(@PathVariable String boardId) {
         boardService.deleteAllNotesByBoardId(boardId);
     }
 
     @DeleteMapping("/{boardId}/note/{noteId}")
+    @ResponseStatus(NO_CONTENT)
     @Override
     public void deleteNote(@PathVariable String boardId, @PathVariable String noteId) {
         boardService.deleteNoteByBoardAndNoteId(boardId, noteId);

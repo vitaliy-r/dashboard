@@ -1,6 +1,6 @@
 package com.epam.dashboard.exception;
 
-public class InvalidIdException extends AbstractServiceException {
+public class InvalidIdException extends ValidationException {
 
     private static final String DEFAULT_MESSAGE = "Id cannot be null or empty";
 

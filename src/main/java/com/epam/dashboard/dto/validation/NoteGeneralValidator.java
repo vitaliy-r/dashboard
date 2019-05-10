@@ -1,6 +1,5 @@
 package com.epam.dashboard.dto.validation;
 
-import com.epam.dashboard.dto.validation.NoteGeneralValidator.List;
 import com.epam.dashboard.dto.validation.impl.NoteGeneralValidatorImpl;
 
 import javax.validation.Constraint;
@@ -14,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(TYPE_USE)
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = NoteGeneralValidatorImpl.class)
-@Repeatable(List.class)
+@Repeatable(NoteGeneralValidator.List.class)
 public @interface NoteGeneralValidator {
 
     boolean exists();

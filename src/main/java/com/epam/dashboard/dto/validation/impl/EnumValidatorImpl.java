@@ -13,14 +13,6 @@ public class EnumValidatorImpl implements ConstraintValidator<EnumValidator, Str
 
     private List<String> valueList = null;
 
-    @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (Objects.isNull(value)) {
-            return true;
-        }
-        return valueList.contains(value.toUpperCase());
-    }
-
     @SuppressWarnings("rawtypes")
     @Override
     public void initialize(EnumValidator constraintAnnotation) {
@@ -32,6 +24,14 @@ public class EnumValidatorImpl implements ConstraintValidator<EnumValidator, Str
         for (Enum value : enumValues) {
             valueList.add(value.toString().toUpperCase());
         }
+    }
+
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (Objects.isNull(value)) {
+            return true;
+        }
+        return valueList.contains(value.toUpperCase());
     }
 
 }

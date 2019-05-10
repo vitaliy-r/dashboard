@@ -15,7 +15,7 @@ public @interface UserUniqueFieldValidator {
 
     UserUniqueField field();
 
-    String message() default "Passwords should be equal";
+    String message() default "Field value is already in use";
 
     Class<?>[] groups() default {};
 

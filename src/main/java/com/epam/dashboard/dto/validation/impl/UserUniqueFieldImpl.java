@@ -17,6 +17,11 @@ public class UserUniqueFieldImpl implements ConstraintValidator<UserUniqueFieldV
     private UserUniqueField fieldName;
 
     @Override
+    public void initialize(UserUniqueFieldValidator constraintAnnotation) {
+        fieldName = constraintAnnotation.field();
+    }
+
+    @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (StringUtils.isBlank(value)) {
             return true; // already validated by @NotBlank annotation
@@ -24,17 +29,12 @@ public class UserUniqueFieldImpl implements ConstraintValidator<UserUniqueFieldV
 
         switch (fieldName) {
             case EMAIL:
-                return userService.isUserExistsWithEmail(value);
+                return !userService.isUserExistsWithEmail(value);
             case USERNAME:
-                return userService.isUserExistsWithUsername(value);
+                return !userService.isUserExistsWithUsername(value);
             default:
                 return false;
         }
-    }
-
-    @Override
-    public void initialize(UserUniqueFieldValidator constraintAnnotation) {
-        fieldName = constraintAnnotation.field();
     }
 
 }

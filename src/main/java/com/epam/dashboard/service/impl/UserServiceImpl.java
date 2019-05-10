@@ -6,7 +6,7 @@ import com.epam.dashboard.exception.RecordIsNotFoundException;
 import com.epam.dashboard.model.User;
 import com.epam.dashboard.repository.UserRepository;
 import com.epam.dashboard.service.UserService;
-import com.epam.dashboard.util.UserMapper;
+import com.epam.dashboard.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

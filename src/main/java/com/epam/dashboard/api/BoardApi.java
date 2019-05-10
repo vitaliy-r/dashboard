@@ -43,10 +43,10 @@ public interface BoardApi {
 
     @ApiOperation(value = "Create note from provided request parameter")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "Created", response = BoardDto.class),
+            @ApiResponse(code = 201, message = "Created", response = NoteDto.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    BoardDto createNote(NoteDto noteDto);
+    NoteDto createNote(NoteDto noteDto);
 
     @ApiOperation(value = "Update board from provided request dto parameter")
     @ApiResponses({
@@ -57,10 +57,10 @@ public interface BoardApi {
 
     @ApiOperation(value = "Update note from provided request dto parameter")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "Created", response = BoardDto.class),
+            @ApiResponse(code = 201, message = "Created", response = NoteDto.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    BoardDto updateNote(NoteDto newNoteDto);
+    NoteDto updateNote(NoteDto newNoteDto);
 
     @ApiOperation(value = "Delete all boards from database")
     @ApiResponse(code = 204, message = "No Content")

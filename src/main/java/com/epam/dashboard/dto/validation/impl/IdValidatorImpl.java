@@ -23,6 +23,11 @@ public class IdValidatorImpl implements ConstraintValidator<IdValidator, String>
     private Class<?> dtoClass;
 
     @Override
+    public void initialize(IdValidator constraintAnnotation) {
+        dtoClass = constraintAnnotation.dtoClass();
+    }
+
+    @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         try {
             if (Objects.equals(dtoClass, BoardDto.class)) {
@@ -36,11 +41,6 @@ public class IdValidatorImpl implements ConstraintValidator<IdValidator, String>
         } catch (RecordIsNotFoundException e) {
             return false;
         }
-    }
-
-    @Override
-    public void initialize(IdValidator constraintAnnotation) {
-        dtoClass = constraintAnnotation.dtoClass();
     }
 
 }

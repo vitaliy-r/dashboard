@@ -18,21 +18,21 @@ public class TitleValidatorImpl implements ConstraintValidator<UniqueTitleValida
     private Class<?> dtoClass;
 
     @Override
+    public void initialize(UniqueTitleValidator constraintAnnotation) {
+        dtoClass = constraintAnnotation.dtoClass();
+    }
+
+    @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (StringUtils.isBlank(value)) {
             return true; // already validated by @NotBlank annotation
         }
 
         if (Objects.equals(dtoClass, BoardDto.class)) {
-            return boardService.isBoardExistsWithTitle(value);
+            return !boardService.isBoardExistsWithTitle(value);
         }
 
         return false;
-    }
-
-    @Override
-    public void initialize(UniqueTitleValidator constraintAnnotation) {
-        dtoClass = constraintAnnotation.dtoClass();
     }
 
 }

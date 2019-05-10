@@ -20,6 +20,11 @@ public class NoteGeneralValidatorImpl implements ConstraintValidator<NoteGeneral
     private boolean shouldExistInDatabase;
 
     @Override
+    public void initialize(NoteGeneralValidator constraintAnnotation) {
+        shouldExistInDatabase = constraintAnnotation.exists();
+    }
+
+    @Override
     public boolean isValid(NoteDto noteDto, ConstraintValidatorContext context) {
         List<NoteDto> notes;
         try {
@@ -35,11 +40,6 @@ public class NoteGeneralValidatorImpl implements ConstraintValidator<NoteGeneral
             return notes.isEmpty() || notes.stream()
                     .noneMatch(note -> StringUtils.equals(note.getTitle(), noteDto.getTitle()));
         }
-    }
-
-    @Override
-    public void initialize(NoteGeneralValidator constraintAnnotation) {
-        shouldExistInDatabase = constraintAnnotation.exists();
     }
 
 }

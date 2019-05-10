@@ -1,6 +1,6 @@
 package com.epam.dashboard.exception;
 
-public class RecordIsNotFoundException extends AbstractServiceException {
+public class RecordIsNotFoundException extends ValidationException {
 
     private static final String DEFAULT_MESSAGE = "Object is not found in database";
 

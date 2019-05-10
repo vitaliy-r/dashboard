@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -33,18 +36,21 @@ public class UserController implements UserApi {
     }
 
     @PostMapping
+    @ResponseStatus(CREATED)
     @Override
     public UserDto createUser(@RequestBody @Validated(OnCreate.class) UserDto userDto) {
         return userService.createUser(userDto);
     }
 
     @PutMapping
+    @ResponseStatus(CREATED)
     @Override
     public UserDto updateUser(@RequestBody @Validated(OnUpdate.class) UserDto newUserDto) {
         return userService.updateUser(newUserDto);
     }
 
     @DeleteMapping("/{userId}")
+    @ResponseStatus(NO_CONTENT)
     @Override
     public void deleteById(@PathVariable String userId) {
         userService.deleteById(userId);

@@ -8,8 +8,8 @@ import com.epam.dashboard.model.Board;
 import com.epam.dashboard.model.Note;
 import com.epam.dashboard.repository.BoardRepository;
 import com.epam.dashboard.service.BoardService;
-import com.epam.dashboard.util.BoardMapper;
-import com.epam.dashboard.util.NoteMapper;
+import com.epam.dashboard.mapper.BoardMapper;
+import com.epam.dashboard.mapper.NoteMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -76,11 +76,13 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public BoardDto addNoteByBoardId(NoteDto noteDto) {
+    public NoteDto addNoteByBoardId(NoteDto noteDto) {
         Board board = getBoardByIdOrThrowException(noteDto.getBoardId());
-        board.addNote(noteMapper.mapNoteDtoToNote(noteDto));
+        Note note = noteMapper.mapNoteDtoToNote(noteDto);
+        board.addNote(note);
+        boardRepository.save(board);
 
-        return boardMapper.mapBoardToBoardDto(boardRepository.save(board));
+        return noteMapper.mapNoteToNoteDto(note);
     }
 
     @Override
@@ -96,7 +98,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public BoardDto updateNote(NoteDto noteDto) {
+    public NoteDto updateNote(NoteDto noteDto) {
         Board board = getBoardByIdOrThrowException(noteDto.getBoardId());
         Note noteToReplace = getNoteByIdOrThrowException(board.getNotes(), noteDto.getNoteId());
         int elemIndex = board.getNotes().indexOf(noteToReplace);
@@ -105,8 +107,9 @@ public class BoardServiceImpl implements BoardService {
         newNote.setMetadata(noteToReplace.getMetadata());
         newNote.getMetadata().setLastModifiedDate(LocalDateTime.now());
         board.getNotes().set(elemIndex, newNote);
+        boardRepository.save(board);
 
-        return boardMapper.mapBoardToBoardDto(boardRepository.save(board));
+        return noteMapper.mapNoteToNoteDto(newNote);
     }
 
     @Override

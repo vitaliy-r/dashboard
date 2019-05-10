@@ -1,4 +1,4 @@
-package com.epam.dashboard.util;
+package com.epam.dashboard.mapper;
 
 import com.epam.dashboard.dto.BoardDto;
 import com.epam.dashboard.model.Board;
@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper
 public interface BoardMapper {
 
-    @Mapping(target = "boardId", ignore = true)
+    @Mapping(target = "boardId", source = "id")
     BoardDto mapBoardToBoardDto(Board board);
 
     @Mapping(target = "id", source = "boardId")

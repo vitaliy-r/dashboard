@@ -1,4 +1,4 @@
-package com.epam.dashboard.util;
+package com.epam.dashboard.mapper;
 
 import com.epam.dashboard.dto.UserDto;
 import com.epam.dashboard.model.User;
@@ -13,7 +13,6 @@ import java.util.List;
 public interface UserMapper {
 
     @Mapping(target = "dateOfBirth", source = "dateOfBirth", dateFormat = "dd-MM-yyyy")
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "equalPassword", ignore = true)
     UserDto mapUserToUserDto(User user);

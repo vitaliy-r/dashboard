@@ -1,4 +1,4 @@
-package com.epam.dashboard.util;
+package com.epam.dashboard.mapper;
 
 import com.epam.dashboard.dto.NoteDto;
 import com.epam.dashboard.model.Metadata;
@@ -16,8 +16,8 @@ import java.util.UUID;
 public interface NoteMapper {
 
     @Mapping(target = "deadline", source = "deadline", dateFormat = "dd-MM-yyyy")
+    @Mapping(target = "noteId", source = "id")
     @Mapping(target = "boardId", ignore = true)
-    @Mapping(target = "noteId", ignore = true)
     NoteDto mapNoteToNoteDto(Note note);
 
     @Mapping(target = "id", expression = "java(UUID.randomUUID().toString())")
