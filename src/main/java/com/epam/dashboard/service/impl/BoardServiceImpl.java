@@ -4,12 +4,12 @@ import com.epam.dashboard.dto.BoardDto;
 import com.epam.dashboard.dto.NoteDto;
 import com.epam.dashboard.exception.InvalidIdException;
 import com.epam.dashboard.exception.RecordIsNotFoundException;
+import com.epam.dashboard.mapper.BoardMapper;
+import com.epam.dashboard.mapper.NoteMapper;
 import com.epam.dashboard.model.Board;
 import com.epam.dashboard.model.Note;
 import com.epam.dashboard.repository.BoardRepository;
 import com.epam.dashboard.service.BoardService;
-import com.epam.dashboard.mapper.BoardMapper;
-import com.epam.dashboard.mapper.NoteMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +46,10 @@ public class BoardServiceImpl implements BoardService {
         List<Note> notes = getBoardByIdOrThrowException(boardId).getNotes();
         Note note = getNoteByIdOrThrowException(notes, noteId);
 
-        return noteMapper.mapNoteToNoteDto(note);
+        NoteDto noteDto = noteMapper.mapNoteToNoteDto(note);
+        noteDto.setBoardId(boardId);
+
+        return noteDto;
     }
 
     @Override
@@ -71,8 +74,12 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardDto create(BoardDto boardDto) {
-        Board board = boardRepository.insert(boardMapper.mapBoardDtoToBoard(boardDto));
-        return boardMapper.mapBoardToBoardDto(board);
+        Board board = boardMapper.mapBoardDtoToBoard(boardDto);
+        boardRepository.insert(board);
+
+        boardDto.setBoardId(board.getId());
+
+        return boardDto;
     }
 
     @Override
@@ -82,7 +89,9 @@ public class BoardServiceImpl implements BoardService {
         board.addNote(note);
         boardRepository.save(board);
 
-        return noteMapper.mapNoteToNoteDto(note);
+        noteDto.setNoteId(note.getId());
+
+        return noteDto;
     }
 
     @Override
@@ -93,8 +102,9 @@ public class BoardServiceImpl implements BoardService {
         newBoard.setNotes(oldBoard.getNotes());
         newBoard.setMetadata(oldBoard.getMetadata());
         newBoard.getMetadata().setLastModifiedDate(LocalDateTime.now());
+        boardRepository.save(newBoard);
 
-        return boardMapper.mapBoardToBoardDto(boardRepository.save(newBoard));
+        return boardDto;
     }
 
     @Override
@@ -109,7 +119,7 @@ public class BoardServiceImpl implements BoardService {
         board.getNotes().set(elemIndex, newNote);
         boardRepository.save(board);
 
-        return noteMapper.mapNoteToNoteDto(newNote);
+        return noteDto;
     }
 
     @Override

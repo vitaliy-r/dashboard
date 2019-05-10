@@ -11,7 +11,7 @@ public interface BoardService {
 
     NoteDto findNoteById(String boardId, String noteId);
 
-    List<NoteDto> findNotesByBoardId(String title);
+    List<NoteDto> findNotesByBoardId(String boardId);
 
     List<BoardDto> findAll();
 

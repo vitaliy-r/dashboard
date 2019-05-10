@@ -1,6 +1,10 @@
 package com.epam.dashboard.controller;
 
 import com.epam.dashboard.api.BoardApi;
+import com.epam.dashboard.controller.assembler.BoardResourceAssembler;
+import com.epam.dashboard.controller.assembler.NoteResourceAssembler;
+import com.epam.dashboard.controller.resource.BoardResource;
+import com.epam.dashboard.controller.resource.NoteResource;
 import com.epam.dashboard.dto.BoardDto;
 import com.epam.dashboard.dto.NoteDto;
 import com.epam.dashboard.dto.validation.group.OnCreate;
@@ -8,10 +12,10 @@ import com.epam.dashboard.dto.validation.group.OnUpdate;
 import com.epam.dashboard.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.Resources;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -23,84 +27,86 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 public class BoardController implements BoardApi {
 
     private final BoardService boardService;
+    private final BoardResourceAssembler boardResourceAssembler;
+    private final NoteResourceAssembler noteResourceAssembler;
 
     @GetMapping
     @Override
-    public List<BoardDto> getAllBoards() {
-        return boardService.findAll();
+    public ResponseEntity<Resources<BoardResource>> getAllBoards() {
+        return ResponseEntity.ok(boardResourceAssembler.toResource(boardService.findAll()));
     }
 
     @GetMapping("/{boardId}")
     @Override
-    public BoardDto getBoard(@PathVariable String boardId) {
-        return boardService.findById(boardId);
+    public ResponseEntity<BoardResource> getBoard(@PathVariable String boardId) {
+        return ResponseEntity.ok(boardResourceAssembler.toResource(boardService.findById(boardId)));
     }
 
     @GetMapping("/{boardId}/note")
     @Override
-    public List<NoteDto> getAllNotes(@PathVariable String boardId) {
-        return boardService.findNotesByBoardId(boardId);
+    public ResponseEntity<Resources<NoteResource>> getAllNotes(@PathVariable String boardId) {
+        return ResponseEntity.ok(noteResourceAssembler.toResource(boardService.findNotesByBoardId(boardId)));
     }
 
     @GetMapping("/{boardId}/note/{noteId}")
     @Override
-    public NoteDto getNote(@PathVariable String boardId, @PathVariable String noteId) {
-        return boardService.findNoteById(boardId, noteId);
+    public ResponseEntity<NoteResource> getNote(@PathVariable String boardId, @PathVariable String noteId) {
+        return ResponseEntity.ok(noteResourceAssembler.toResource(boardService.findNoteById(boardId, noteId)));
     }
 
     @PostMapping
-    @ResponseStatus(CREATED)
     @Override
-    public BoardDto createBoard(@RequestBody @Validated(OnCreate.class) BoardDto boardDto) {
-        return boardService.create(boardDto);
+    public ResponseEntity<BoardResource> createBoard(@RequestBody @Validated(OnCreate.class) BoardDto boardDto) {
+        return ResponseEntity.status(CREATED).body(
+                boardResourceAssembler.toResource(boardService.create(boardDto)));
     }
 
     @PostMapping("/note")
-    @ResponseStatus(CREATED)
     @Override
-    public NoteDto createNote(@RequestBody @Validated(OnCreate.class) NoteDto noteDto) {
-        return boardService.addNoteByBoardId(noteDto);
+    public ResponseEntity<NoteResource> createNote(@RequestBody @Validated(OnCreate.class) NoteDto noteDto) {
+        return ResponseEntity.status(CREATED).body(
+                noteResourceAssembler.toResource(boardService.addNoteByBoardId(noteDto)));
     }
 
     @PutMapping
-    @ResponseStatus(CREATED)
     @Override
-    public BoardDto updateBoard(@RequestBody @Validated(OnUpdate.class) BoardDto newBoardDto) {
-        return boardService.updateBoard(newBoardDto);
+    public ResponseEntity<BoardResource> updateBoard(@RequestBody @Validated(OnUpdate.class) BoardDto newBoardDto) {
+        return ResponseEntity.status(CREATED).body(
+                boardResourceAssembler.toResource(boardService.updateBoard(newBoardDto)));
     }
 
     @PutMapping("/note")
-    @ResponseStatus(CREATED)
     @Override
-    public NoteDto updateNote(@RequestBody @Validated(OnUpdate.class) NoteDto newNoteDto) {
-        return boardService.updateNote(newNoteDto);
+    public ResponseEntity<NoteResource> updateNote(@RequestBody @Validated(OnUpdate.class) NoteDto newNoteDto) {
+        return ResponseEntity.status(CREATED).body(
+                noteResourceAssembler.toResource(boardService.updateNote(newNoteDto)));
     }
 
     @DeleteMapping
-    @ResponseStatus(NO_CONTENT)
     @Override
-    public void deleteAllBoards() {
+    public ResponseEntity<Void> deleteAllBoards() {
         boardService.deleteAllBoards();
+        return new ResponseEntity<>(NO_CONTENT);
     }
 
     @DeleteMapping("/{boardId}")
-    @ResponseStatus(NO_CONTENT)
     @Override
-    public void deleteBoard(@PathVariable String boardId) {
+    public ResponseEntity<Void> deleteBoard(@PathVariable String boardId) {
         boardService.deleteBoardById(boardId);
+        return new ResponseEntity<>(NO_CONTENT);
     }
 
     @DeleteMapping("/{boardId}/note")
-    @ResponseStatus(NO_CONTENT)
     @Override
-    public void deleteAllNotes(@PathVariable String boardId) {
+    public ResponseEntity<Void> deleteAllNotes(@PathVariable String boardId) {
         boardService.deleteAllNotesByBoardId(boardId);
+        return new ResponseEntity<>(NO_CONTENT);
     }
 
     @DeleteMapping("/{boardId}/note/{noteId}")
-    @ResponseStatus(NO_CONTENT)
     @Override
-    public void deleteNote(@PathVariable String boardId, @PathVariable String noteId) {
+    public ResponseEntity<Void> deleteNote(@PathVariable String boardId, @PathVariable String noteId) {
         boardService.deleteNoteByBoardAndNoteId(boardId, noteId);
+        return new ResponseEntity<>(NO_CONTENT);
     }
 }

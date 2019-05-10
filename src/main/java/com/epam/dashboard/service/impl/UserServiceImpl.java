@@ -3,10 +3,10 @@ package com.epam.dashboard.service.impl;
 import com.epam.dashboard.dto.UserDto;
 import com.epam.dashboard.exception.InvalidIdException;
 import com.epam.dashboard.exception.RecordIsNotFoundException;
+import com.epam.dashboard.mapper.UserMapper;
 import com.epam.dashboard.model.User;
 import com.epam.dashboard.repository.UserRepository;
 import com.epam.dashboard.service.UserService;
-import com.epam.dashboard.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -49,14 +49,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        User user = userRepository.insert(userMapper.mapUserDtoToUser(userDto));
-        return userMapper.mapUserToUserDto(user);
+        User user = userMapper.mapUserDtoToUser(userDto);
+        userRepository.insert(user);
+
+        userDto.setId(user.getId());
+
+        return userDto;
     }
 
     @Override
     public UserDto updateUser(UserDto userDto) {
-        User user = userRepository.save(userMapper.mapUserDtoToUser(userDto));
-        return userMapper.mapUserToUserDto(user);
+        userRepository.save(userMapper.mapUserDtoToUser(userDto));
+        return userDto;
     }
 
     @Override
