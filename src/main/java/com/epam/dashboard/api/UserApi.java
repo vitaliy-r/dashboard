@@ -40,7 +40,7 @@ public interface UserApi {
     ResponseEntity<UserResource> updateUser(UserDto newUserDto);
 
     @ApiOperation(value = "Delete one user from database by provided id")
-    @ApiResponse(code = 204, message = "No Content")
-    ResponseEntity<Void> deleteById(String userId);
+    @ApiResponse(code = 200, message = "OK")
+    ResponseEntity<UserResource> deleteById(String userId);
 
 }

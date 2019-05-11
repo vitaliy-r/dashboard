@@ -15,7 +15,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,18 +28,21 @@ public class UserController implements UserApi {
     @GetMapping
     @Override
     public ResponseEntity<Resources<UserResource>> getAllUsers() {
+        log.info("getAllUsers: method is called");
         return ResponseEntity.ok(userResourceAssembler.toResource(userService.findAll()));
     }
 
     @GetMapping("/{userId}")
     @Override
     public ResponseEntity<UserResource> getUser(@PathVariable String userId) {
+        log.info("getUser: called with userId parameter - {}", userId);
         return ResponseEntity.ok(userResourceAssembler.toResource(userService.findById(userId)));
     }
 
     @PostMapping
     @Override
     public ResponseEntity<UserResource> createUser(@RequestBody @Validated(OnCreate.class) UserDto userDto) {
+        log.info("createUser: called with userDto request body - {}", userDto);
         return ResponseEntity.status(CREATED).body(
                 userResourceAssembler.toResource(userService.createUser(userDto)));
     }
@@ -48,15 +50,17 @@ public class UserController implements UserApi {
     @PutMapping
     @Override
     public ResponseEntity<UserResource> updateUser(@RequestBody @Validated(OnUpdate.class) UserDto newUserDto) {
+        log.info("updateUser: called with newUserDto request body - {}", newUserDto);
         return ResponseEntity.status(CREATED).body(
                 userResourceAssembler.toResource(userService.updateUser(newUserDto)));
     }
 
     @DeleteMapping("/{userId}")
     @Override
-    public ResponseEntity<Void> deleteById(@PathVariable String userId) {
+    public ResponseEntity<UserResource> deleteById(@PathVariable String userId) {
+        log.info("deleteById: called with userId parameter  - {}", userId);
         userService.deleteById(userId);
-        return new ResponseEntity<>(NO_CONTENT);
+        return ResponseEntity.ok(userResourceAssembler.toResource(new UserDto()));
     }
 
 }

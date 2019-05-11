@@ -15,6 +15,6 @@ import org.springframework.hateoas.ResourceSupport;
 public class UserResource extends ResourceSupport {
 
     @JsonUnwrapped
-    private final UserDto boardDto;
+    private final UserDto userDto;
 
 }

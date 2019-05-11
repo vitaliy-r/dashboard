@@ -67,11 +67,13 @@ public class UserDto {
 
     @ApiModelProperty(notes = "User's password")
     @JsonProperty(access = WRITE_ONLY)
+    @Null(message = "Password must be null", groups = OnUpdate.class)
     @NotBlank(message = "Please, fill in 'password' field", groups = OnCreate.class)
     private String password;
 
     @ApiModelProperty(notes = "Confirmation user's password. Should be equal to the first one")
     @JsonProperty(access = WRITE_ONLY)
+    @Null(message = "Password must be null", groups = OnUpdate.class)
     @NotBlank(message = "Please, fill in 'equalPassword' field", groups = OnCreate.class)
     private String equalPassword;
 

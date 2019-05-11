@@ -7,7 +7,6 @@ import com.epam.dashboard.dto.validation.group.CommonGroup;
 import com.epam.dashboard.dto.validation.group.OnCreate;
 import com.epam.dashboard.dto.validation.group.OnUpdate;
 import com.epam.dashboard.model.enums.NoteStatus;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -16,8 +15,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 
-import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
-
 @Data
 @ApiModel(description = "Note details")
 @NoteGeneralValidator(message = "Title is already in use", exists = false, groups = OnCreate.class)
@@ -25,7 +22,6 @@ import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 public class NoteDto {
 
     @ApiModelProperty(notes = "Id of board that current note belongs to")
-    @JsonProperty(access = WRITE_ONLY)
     @NotBlank(message = "Board id must not be null or empty", groups = CommonGroup.class)
     @IdValidator(message = "Board is not found in database",
             dtoClass = BoardDto.class, groups = CommonGroup.class)

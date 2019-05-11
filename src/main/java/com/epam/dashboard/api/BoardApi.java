@@ -64,19 +64,19 @@ public interface BoardApi {
     ResponseEntity<NoteResource> updateNote(NoteDto newNoteDto);
 
     @ApiOperation(value = "Delete all boards from database")
-    @ApiResponse(code = 204, message = "No Content")
-    ResponseEntity<Void> deleteAllBoards();
+    @ApiResponse(code = 200, message = "OK")
+    ResponseEntity<BoardResource> deleteAllBoards();
 
     @ApiOperation(value = "Delete one board from database by provided id")
-    @ApiResponse(code = 204, message = "No Content")
-    ResponseEntity<Void> deleteBoard(String boardId);
+    @ApiResponse(code = 200, message = "OK")
+    ResponseEntity<BoardResource> deleteBoard(String boardId);
 
     @ApiOperation(value = "Delete all notes from board by provided id")
-    @ApiResponse(code = 204, message = "No Content")
-    ResponseEntity<Void> deleteAllNotes(String boardId);
+    @ApiResponse(code = 200, message = "OK")
+    ResponseEntity<NoteResource> deleteAllNotes(String boardId);
 
     @ApiOperation(value = "Delete one note from board by provided board&note id")
-    @ApiResponse(code = 204, message = "No Content")
-    ResponseEntity<Void> deleteNote(String boardId, String noteId);
+    @ApiResponse(code = 200, message = "OK")
+    ResponseEntity<NoteResource> deleteNote(String boardId, String noteId);
 
 }
