@@ -25,10 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findById(String id) {
-        validateId(id);
-
-        User user = findUserByIdOrElseThrowException(id);
-
+        User user = findUserByIdWithValidation(id);
         return userMapper.mapUserToUserDto(user);
     }
 
@@ -59,25 +56,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto) {
+        findUserByIdWithValidation(userDto.getId());
         userRepository.save(userMapper.mapUserDtoToUser(userDto));
         return userDto;
     }
 
     @Override
     public void deleteById(String id) {
-        validateId(id);
-
-        User user = findUserByIdOrElseThrowException(id);
+        User user = findUserByIdWithValidation(id);
         userRepository.delete(user);
     }
 
-    private void validateId(String id) {
+    private User findUserByIdWithValidation(String id) {
         if (StringUtils.isBlank(id)) {
             throw new InvalidIdException("User id cannot be null or empty");
         }
-    }
 
-    private User findUserByIdOrElseThrowException(String id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RecordIsNotFoundException(String.format("User is not found by id: %s", id)));
     }

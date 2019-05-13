@@ -202,14 +202,14 @@
 
                         <configuration>
                             <targetClasses>
-                                <!--<param>com.epam.dashboard.controller.BoardController</param>-->
-                                <!--<param>com.epam.dashboard.controller.UserController</param>-->
-                                <!--<param>com.epam.dashboard.controller.ErrorHandlingController</param>-->
+                                <param>com.epam.dashboard.controller.BoardController</param>
+                                <param>com.epam.dashboard.controller.UserController</param>
+                                <param>com.epam.dashboard.controller.ErrorHandlingController</param>
                                 <param>com.epam.dashboard.service.impl.*</param>
                             </targetClasses>
                             <targetTests>
-                                <!--<param>com.epam.dashboard.controller.BoardControllerTest</param>-->
-                                <!--<param>com.epam.dashboard.controller.UserControllerTest</param>-->
+                                <param>com.epam.dashboard.controller.BoardControllerTest</param>
+                                <param>com.epam.dashboard.controller.UserControllerTest</param>
                                 <param>com.epam.dashboard.service.impl.*</param>
                             </targetTests>
                             <mutators>

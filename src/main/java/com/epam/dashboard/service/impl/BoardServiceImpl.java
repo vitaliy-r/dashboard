@@ -32,19 +32,14 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardDto findById(String id) {
-        validateIDs(id);
-
-        Board board = getBoardByIdOrThrowException(id);
-
+        Board board = getBoardByIdWithValidation(id);
         return boardMapper.mapBoardToBoardDto(board);
     }
 
     @Override
     public NoteDto findNoteById(String boardId, String noteId) {
-        validateIDs(boardId, noteId);
-
-        List<Note> notes = getBoardByIdOrThrowException(boardId).getNotes();
-        Note note = getNoteByIdOrThrowException(notes, noteId);
+        List<Note> notes = getBoardByIdWithValidation(boardId).getNotes();
+        Note note = getNoteByIdWithValidation(notes, noteId);
 
         NoteDto noteDto = noteMapper.mapNoteToNoteDto(note);
         noteDto.setBoardId(boardId);
@@ -65,10 +60,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public List<NoteDto> findNotesByBoardId(String id) {
-        validateIDs(id);
-
-        List<Note> notes = getBoardByIdOrThrowException(id).getNotes();
-
+        List<Note> notes = getBoardByIdWithValidation(id).getNotes();
         return Objects.nonNull(notes) ? noteMapper.mapNotesToNoteDTOs(notes) : Collections.emptyList();
     }
 
@@ -84,7 +76,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public NoteDto addNoteByBoardId(NoteDto noteDto) {
-        Board board = getBoardByIdOrThrowException(noteDto.getBoardId());
+        Board board = getBoardByIdWithValidation(noteDto.getBoardId());
         Note note = noteMapper.mapNoteDtoToNote(noteDto);
         board.addNote(note);
         boardRepository.save(board);
@@ -96,7 +88,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardDto updateBoard(BoardDto boardDto) {
-        Board oldBoard = getBoardByIdOrThrowException(boardDto.getBoardId());
+        Board oldBoard = getBoardByIdWithValidation(boardDto.getBoardId());
 
         Board newBoard = boardMapper.mapBoardDtoToBoard(boardDto);
         newBoard.setNotes(oldBoard.getNotes());
@@ -109,8 +101,8 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public NoteDto updateNote(NoteDto noteDto) {
-        Board board = getBoardByIdOrThrowException(noteDto.getBoardId());
-        Note noteToReplace = getNoteByIdOrThrowException(board.getNotes(), noteDto.getNoteId());
+        Board board = getBoardByIdWithValidation(noteDto.getBoardId());
+        Note noteToReplace = getNoteByIdWithValidation(board.getNotes(), noteDto.getNoteId());
         int elemIndex = board.getNotes().indexOf(noteToReplace);
 
         Note newNote = noteMapper.mapNoteDtoToNoteUpdateMethod(noteDto);
@@ -129,17 +121,13 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public void deleteBoardById(String id) {
-        validateIDs(id);
-
-        Board board = getBoardByIdOrThrowException(id);
+        Board board = getBoardByIdWithValidation(id);
         boardRepository.delete(board);
     }
 
     @Override
     public void deleteAllNotesByBoardId(String id) {
-        validateIDs(id);
-
-        Board board = getBoardByIdOrThrowException(id);
+        Board board = getBoardByIdWithValidation(id);
         board.getNotes().clear();
 
         boardRepository.save(board);
@@ -147,29 +135,27 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public void deleteNoteByBoardAndNoteId(String boardId, String noteId) {
-        validateIDs(boardId, noteId);
-
-        Board board = getBoardByIdOrThrowException(boardId);
-        Note note = getNoteByIdOrThrowException(board.getNotes(), noteId);
+        Board board = getBoardByIdWithValidation(boardId);
+        Note note = getNoteByIdWithValidation(board.getNotes(), noteId);
         board.getNotes().remove(note);
 
         boardRepository.save(board);
     }
 
-    private void validateIDs(String... ids) {
-        for (String id : ids) {
-            if (StringUtils.isBlank(id)) {
-                throw new InvalidIdException();
-            }
+    private Board getBoardByIdWithValidation(String boardId) {
+        if (StringUtils.isBlank(boardId)) {
+            throw new InvalidIdException();
         }
-    }
 
-    private Board getBoardByIdOrThrowException(String boardId) {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> new RecordIsNotFoundException(String.format("Board is not found by id: %s", boardId)));
     }
 
-    private Note getNoteByIdOrThrowException(List<Note> notes, String noteId) {
+    private Note getNoteByIdWithValidation(List<Note> notes, String noteId) {
+        if (StringUtils.isBlank(noteId)) {
+            throw new InvalidIdException();
+        }
+
         if (Objects.isNull(notes) || notes.isEmpty()) {
             throw new RecordIsNotFoundException(String.format("No notes found by id: %s", noteId));
         }

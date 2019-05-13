@@ -16,6 +16,7 @@ import org.powermock.reflect.Whitebox;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -46,13 +47,19 @@ public class UserServiceImplTest {
     @Test
     public void findByIdTest() {
         when(repository.findById(anyString())).thenReturn(Optional.of(testUser));
-        assertEquals(testUser.getId(), userService.findById("TestID").getId());
+
+        UserDto userDto = userService.findById(testUser.getId());
+
+        assertEquals(testUser.getId(), userDto.getId());
     }
 
     @Test
     public void findAllTest() {
         when(repository.findAll()).thenReturn(Collections.singletonList(testUser));
-        assertEquals(testUser.getId(), userService.findAll().get(0).getId());
+
+        List<UserDto> userDTOs = userService.findAll();
+
+        assertEquals(testUser.getId(), userDTOs .get(0).getId());
     }
 
     @Test
@@ -69,17 +76,23 @@ public class UserServiceImplTest {
 
     @Test
     public void createUser() {
+        testUserDto.setId(null);
         when(repository.insert(any(User.class))).thenReturn(null);
 
-        assertEquals(testUserDto.getId(), userService.createUser(testUserDto).getId());
+        UserDto userDto = userService.createUser(testUserDto);
+
+        assertEquals(testUserDto.getEmail(), userDto.getEmail());
         verify(repository).insert(any(User.class));
     }
 
     @Test
     public void updateUser() {
+        when(repository.findById(anyString())).thenReturn(Optional.of(testUser));
         when(repository.save(any(User.class))).thenReturn(null);
 
-        assertEquals(testUserDto.getId(), userService.updateUser(testUserDto).getId());
+        UserDto userDto = userService.updateUser(testUserDto);
+
+        assertEquals(testUserDto.getId(), userDto.getId());
         verify(repository).save(any(User.class));
     }
 
@@ -88,20 +101,30 @@ public class UserServiceImplTest {
         when(repository.findById(anyString())).thenReturn(Optional.of(testUser));
         doNothing().when(repository).delete(any());
 
-        userService.deleteById("TestID");
+        userService.deleteById(testUser.getId());
+
         verify(repository).delete(any());
-        assertEquals(testUser.getId(), userService.findById("TestID").getId());
+    }
+
+    @Test
+    public void findUserByIdWithValidationTest() throws Exception {
+        when(repository.findById(anyString())).thenReturn(Optional.of(testUser));
+
+        User extractedUser = Whitebox.invokeMethod(userService,
+                "findUserByIdWithValidation", testUser.getId());
+
+        assertEquals(testUser, extractedUser);
     }
 
     @Test(expected = InvalidIdException.class)
-    public void validateIdTest() throws Exception {
-        Whitebox.invokeMethod(userService, "validateId", "");
+    public void findUserByIdWithValidationInvalidIdExceptionTest() throws Exception {
+        Whitebox.invokeMethod(userService, "findUserByIdWithValidation", "");
     }
 
     @Test(expected = RecordIsNotFoundException.class)
-    public void findUserByIdOrElseThrowExceptionTest() throws Exception {
+    public void findUserByIdWithValidationRecordIsNotFoundExceptionTest() throws Exception {
         when(repository.findById(anyString())).thenReturn(Optional.empty());
-        Whitebox.invokeMethod(userService, "findUserByIdOrElseThrowException", "");
+        Whitebox.invokeMethod(userService, "findUserByIdWithValidation", testUser.getId());
     }
 
     private static User generateUser() {
