@@ -68,8 +68,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private User findUserByIdWithValidation(String id) {
-        if (StringUtils.isBlank(id)) {
-            throw new InvalidIdException("User id cannot be null or empty");
+        if (StringUtils.isBlank(id) || !id.matches("^[0-9a-fA-F]{24}$")) {
+            throw new InvalidIdException(String.format("Not valid userID: %s", id));
         }
 
         return userRepository.findById(id)

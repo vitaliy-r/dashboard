@@ -20,7 +20,7 @@ public interface NoteMapper {
     @Mapping(target = "boardId", ignore = true)
     NoteDto mapNoteToNoteDto(Note note);
 
-    @Mapping(target = "id", expression = "java(UUID.randomUUID().toString())")
+    @Mapping(target = "id", expression = "java(UUID.randomUUID().toString().replaceAll(\"-\", \"\").substring(12))")
     @Mapping(target = "status", source = "noteDto", qualifiedByName = "formStatus")
     @Mapping(target = "deadline", source = "deadline", dateFormat = "dd-MM-yyyy")
     @Mapping(target = "metadata", expression = "java(formCreationMetadata())")

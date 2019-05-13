@@ -143,8 +143,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private Board getBoardByIdWithValidation(String boardId) {
-        if (StringUtils.isBlank(boardId)) {
-            throw new InvalidIdException();
+        if (StringUtils.isBlank(boardId) || !boardId.matches("^[0-9a-fA-F]{24}$")) {
+            throw new InvalidIdException(String.format("Not valid boardID: %s", boardId));
         }
 
         return boardRepository.findById(boardId)
@@ -152,8 +152,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private Note getNoteByIdWithValidation(List<Note> notes, String noteId) {
-        if (StringUtils.isBlank(noteId)) {
-            throw new InvalidIdException();
+        if (StringUtils.isBlank(noteId) || !noteId.matches("^[0-9a-fA-F]{20}$")) {
+            throw new InvalidIdException(String.format("Not valid noteID: %s", noteId));
         }
 
         if (Objects.isNull(notes) || notes.isEmpty()) {

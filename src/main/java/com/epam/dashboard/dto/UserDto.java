@@ -30,6 +30,8 @@ public class UserDto {
 
     @ApiModelProperty(notes = "The database generated board id")
     @Null(message = "User id must be null", groups = OnCreate.class)
+    @Pattern(message = "UserId should be valid against ^[0-9a-fA-F]{24}$ pattern",
+            groups = OnUpdate.class, regexp = "^[0-9a-fA-F]{24}$")
     @NotBlank(message = "Use id cannot be null or empty", groups = OnUpdate.class)
     @IdValidator(message = "User is not found in database", dtoClass = UserDto.class, groups = OnUpdate.class)
     private String id;

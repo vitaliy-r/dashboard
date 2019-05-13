@@ -23,12 +23,16 @@ public class NoteDto {
 
     @ApiModelProperty(notes = "Id of board that current note belongs to")
     @NotBlank(message = "Board id must not be null or empty", groups = CommonGroup.class)
+    @Pattern(message = "BoardId should be valid against ^[0-9a-fA-F]{24}$ pattern",
+            groups = CommonGroup.class, regexp = "^[0-9a-fA-F]{24}$")
     @IdValidator(message = "Board is not found in database",
             dtoClass = BoardDto.class, groups = CommonGroup.class)
     private String boardId;
 
     @ApiModelProperty(notes = "Note generated id")
     @Null(message = "Note id must be null", groups = OnCreate.class)
+    @Pattern(message = "NoteId should be valid against ^[0-9a-fA-F]{20}$ pattern",
+            groups = OnUpdate.class, regexp = "^[0-9a-fA-F]{20}$")
     @NotBlank(message = "Note id must not be null or empty", groups = OnUpdate.class)
     private String noteId;
 

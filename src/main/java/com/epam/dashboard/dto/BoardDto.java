@@ -9,10 +9,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Null;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 
 @Data
 @ApiModel(description = "Board details")
@@ -20,6 +17,8 @@ public class BoardDto {
 
     @ApiModelProperty(notes = "The database generated board id")
     @Null(message = "Board id must be null", groups = OnCreate.class)
+    @Pattern(message = "BoardId should be valid against ^[0-9a-fA-F]{24}$ pattern",
+            groups = OnUpdate.class, regexp = "^[0-9a-fA-F]{24}$")
     @NotBlank(message = "Board id must not be null or empty", groups = OnUpdate.class)
     @IdValidator(message = "Board is not found in database", dtoClass = BoardDto.class, groups = OnUpdate.class)
     private String boardId;
