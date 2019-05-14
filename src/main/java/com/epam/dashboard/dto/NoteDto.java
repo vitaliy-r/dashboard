@@ -31,8 +31,8 @@ public class NoteDto {
 
     @ApiModelProperty(notes = "Note generated id")
     @Null(message = "Note id must be null", groups = OnCreate.class)
-    @Pattern(message = "NoteId should be valid against ^[0-9a-fA-F]{20}$ pattern",
-            groups = OnUpdate.class, regexp = "^[0-9a-fA-F]{20}$")
+    @Pattern(message = "NoteId should be valid against ^[0-9a-fA-F]{24}$ pattern",
+            groups = OnUpdate.class, regexp = "^[0-9a-fA-F]{24}$")
     @NotBlank(message = "Note id must not be null or empty", groups = OnUpdate.class)
     private String noteId;
 

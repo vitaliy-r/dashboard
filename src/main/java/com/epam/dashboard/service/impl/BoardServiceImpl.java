@@ -152,7 +152,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     private Note getNoteByIdWithValidation(List<Note> notes, String noteId) {
-        if (StringUtils.isBlank(noteId) || !noteId.matches("^[0-9a-fA-F]{20}$")) {
+        if (StringUtils.isBlank(noteId) || !noteId.matches("^[0-9a-fA-F]{24}$")) {
             throw new InvalidIdException(String.format("Not valid noteID: %s", noteId));
         }
 
