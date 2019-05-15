@@ -1,13 +1,16 @@
 package com.epam.dashboard.dto.validation;
 
-import com.epam.dashboard.dto.validation.impl.NoteGeneralValidatorImpl;
-
-import javax.validation.Constraint;
-import javax.validation.Payload;
-import java.lang.annotation.*;
-
 import static java.lang.annotation.ElementType.TYPE_USE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import com.epam.dashboard.dto.validation.impl.NoteGeneralValidatorImpl;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
 @Documented
 @Target(TYPE_USE)
@@ -16,19 +19,20 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Repeatable(NoteGeneralValidator.List.class)
 public @interface NoteGeneralValidator {
 
-    boolean exists();
+  boolean exists();
 
-    String message();
+  String message();
 
-    Class<?>[] groups() default {};
+  Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+  Class<? extends Payload>[] payload() default {};
 
-    @Target(TYPE_USE)
-    @Retention(RUNTIME)
-    @Documented
-    @interface List {
-        NoteGeneralValidator[] value();
-    }
+  @Target(TYPE_USE)
+  @Retention(RUNTIME)
+  @Documented
+  @interface List {
+
+    NoteGeneralValidator[] value();
+  }
 
 }

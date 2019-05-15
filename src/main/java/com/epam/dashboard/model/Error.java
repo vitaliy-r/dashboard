@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Error {
 
-    private String type;
-    private String code;
-    private String message;
+  private String type;
+  private String code;
+  private String message;
 
 }

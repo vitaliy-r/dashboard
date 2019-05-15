@@ -14,24 +14,25 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 public class Swagger2Config {
 
-    @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2).select()
-                .apis(RequestHandlerSelectors
-                        .basePackage("com.epam.dashboard.controller"))
-                .paths(PathSelectors.any())
-                .build()
-                .pathMapping("/")
-                .apiInfo(apiEndPointsInfo())
-                .useDefaultResponseMessages(false);
-    }
+  @Bean
+  public Docket api() {
+    return new Docket(DocumentationType.SWAGGER_2)
+        .groupName("v1-api")
+        .select()
+        .apis(RequestHandlerSelectors
+            .basePackage("com.epam.dashboard.controller"))
+        .paths(PathSelectors.any())
+        .build()
+        .apiInfo(apiEndPointsInfo())
+        .useDefaultResponseMessages(false);
+  }
 
-    private ApiInfo apiEndPointsInfo() {
-        return new ApiInfoBuilder()
-                .title("Dashboard Service")
-                .description("Dashboard Management REST API")
-                .version("1.0.0")
-                .build();
-    }
+  private ApiInfo apiEndPointsInfo() {
+    return new ApiInfoBuilder()
+        .title("Dashboard Service")
+        .description("Dashboard Management REST API")
+        .version("1.0.0")
+        .build();
+  }
 
 }

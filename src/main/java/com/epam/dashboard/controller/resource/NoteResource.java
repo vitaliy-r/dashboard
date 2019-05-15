@@ -14,7 +14,7 @@ import org.springframework.hateoas.ResourceSupport;
 @RequiredArgsConstructor
 public class NoteResource extends ResourceSupport {
 
-    @JsonUnwrapped
-    private final NoteDto noteDto;
+  @JsonUnwrapped
+  private final NoteDto noteDto;
 
 }

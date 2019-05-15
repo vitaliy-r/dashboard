@@ -204,7 +204,6 @@
                             <targetClasses>
                                 <param>com.epam.dashboard.controller.BoardController</param>
                                 <param>com.epam.dashboard.controller.UserController</param>
-                                <param>com.epam.dashboard.controller.ErrorHandlingController</param>
                                 <param>com.epam.dashboard.service.impl.*</param>
                             </targetClasses>
                             <targetTests>

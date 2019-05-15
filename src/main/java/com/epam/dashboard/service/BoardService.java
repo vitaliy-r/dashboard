@@ -2,35 +2,34 @@ package com.epam.dashboard.service;
 
 import com.epam.dashboard.dto.BoardDto;
 import com.epam.dashboard.dto.NoteDto;
-
 import java.util.List;
 
 public interface BoardService {
 
-    BoardDto findById(String id);
+  BoardDto findById(String id);
 
-    NoteDto findNoteById(String boardId, String noteId);
+  NoteDto findNoteById(String boardId, String noteId);
 
-    List<NoteDto> findNotesByBoardId(String boardId);
+  List<NoteDto> findNotesByBoardId(String boardId);
 
-    List<BoardDto> findAll();
+  List<BoardDto> findAll();
 
-    boolean isBoardExistsWithTitle(String title);
+  boolean isBoardExistsWithTitle(String title);
 
-    BoardDto create(BoardDto boardDto);
+  BoardDto create(BoardDto boardDto);
 
-    NoteDto addNoteByBoardId(NoteDto note);
+  NoteDto addNoteByBoardId(NoteDto note);
 
-    BoardDto updateBoard(BoardDto boardDto);
+  BoardDto updateBoard(BoardDto boardDto);
 
-    NoteDto updateNote(NoteDto noteDto);
+  NoteDto updateNote(NoteDto noteDto);
 
-    void deleteAllBoards();
+  void deleteAllBoards();
 
-    void deleteBoardById(String id);
+  void deleteBoardById(String id);
 
-    void deleteAllNotesByBoardId(String id);
+  void deleteAllNotesByBoardId(String id);
 
-    void deleteNoteByBoardAndNoteId(String boardId, String noteId);
+  void deleteNoteByBoardAndNoteId(String boardId, String noteId);
 
 }
