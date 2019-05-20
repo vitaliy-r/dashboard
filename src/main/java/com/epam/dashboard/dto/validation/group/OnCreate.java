@@ -1,5 +1,7 @@
 package com.epam.dashboard.dto.validation.group;
 
-public interface OnCreate extends CommonGroup {
+import javax.validation.groups.Default;
+
+public interface OnCreate extends Default {
 
 }
