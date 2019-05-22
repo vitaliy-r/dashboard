@@ -1,8 +1,12 @@
 package com.epam.dashboard.service.impl;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
@@ -63,7 +67,7 @@ public class BoardServiceImplTest {
 
     BoardDto boardDto = boardService.findById(testBoard.getId());
 
-    assertEquals(testBoard.getId(), boardDto.getBoardId());
+    assertThat(boardDto, hasProperty("boardId", is(testBoard.getId())));
   }
 
   @Test
@@ -73,7 +77,8 @@ public class BoardServiceImplTest {
     NoteDto noteDto = boardService
         .findNoteById(testBoard.getId(), testBoard.getNotes().get(0).getId());
 
-    assertEquals(testBoard.getId(), noteDto.getBoardId());
+    assertThat(noteDto,
+        hasProperty("noteId", is(testBoard.getNotes().get(0).getId())));
   }
 
   @Test
@@ -88,7 +93,7 @@ public class BoardServiceImplTest {
 
     List<BoardDto> boardDTOs = boardService.findAll();
 
-    assertEquals(testBoard.getId(), boardDTOs.get(0).getBoardId());
+    assertThat(boardDTOs, hasItem(hasProperty("boardId", is(testBoard.getId()))));
   }
 
   @Test
@@ -97,7 +102,8 @@ public class BoardServiceImplTest {
 
     List<NoteDto> noteDTOs = boardService.findNotesByBoardId(testBoard.getId());
 
-    assertEquals(testBoard.getNotes().get(0).getId(), noteDTOs.get(0).getNoteId());
+    assertThat(noteDTOs,
+        hasItem(hasProperty("noteId", is(testBoard.getNotes().get(0).getId()))));
   }
 
   @Test
@@ -107,7 +113,7 @@ public class BoardServiceImplTest {
 
     BoardDto boardDto = boardService.create(testBoardDto);
 
-    assertEquals(testBoardDto.getTitle(), boardDto.getTitle());
+    assertThat(boardDto, hasProperty("title", is(testBoardDto.getTitle())));
     verify(repository).insert(any(Board.class));
   }
 
@@ -120,7 +126,7 @@ public class BoardServiceImplTest {
 
     NoteDto noteDto = boardService.addNoteByBoardId(testNoteDto);
 
-    assertNotNull(noteDto.getNoteId());
+    assertThat(noteDto.getNoteId(), notNullValue());
     verify(repository).save(any(Board.class));
   }
 
@@ -131,7 +137,7 @@ public class BoardServiceImplTest {
 
     BoardDto boardDto = boardService.updateBoard(testBoardDto);
 
-    assertEquals(testBoardDto, boardDto);
+    assertThat(boardDto, is(equalTo(testBoardDto)));
     verify(repository).save(any(Board.class));
   }
 
@@ -143,7 +149,7 @@ public class BoardServiceImplTest {
 
     NoteDto noteDto = boardService.updateNote(testNoteDto);
 
-    assertEquals(testNoteDto, noteDto);
+    assertThat(noteDto, is(equalTo(testNoteDto)));
     verify(repository).save(any(Board.class));
   }
 
@@ -195,7 +201,7 @@ public class BoardServiceImplTest {
     Board extractedBoard = Whitebox.invokeMethod(boardService,
         "getBoardByIdWithValidation", testBoard.getId());
 
-    assertEquals(testBoard, extractedBoard);
+    assertThat(extractedBoard, is(equalTo(testBoard)));
   }
 
   @Test(expected = InvalidIdException.class)
@@ -216,7 +222,7 @@ public class BoardServiceImplTest {
     Note extractedNote = Whitebox.invokeMethod(boardService,
         "getNoteByIdWithValidation", testBoard.getNotes(), testNote.getId());
 
-    assertEquals(testNote, extractedNote);
+    assertThat(extractedNote, is(equalTo(testNote)));
   }
 
   @Test(expected = InvalidIdException.class)

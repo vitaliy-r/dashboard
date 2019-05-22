@@ -16,14 +16,9 @@ public class ErrorMapper {
   }
 
   public static List<Error> mapException(MethodArgumentNotValidException e) {
-    System.out.println(e.getMessage());
-    System.out.println(e.getBindingResult());
-    System.out.println(e.getBindingResult().getAllErrors());
     return e.getBindingResult().getAllErrors().stream()
         .map(error -> new Error(ErrorType.PROCESSING_ERROR_TYPE.name(),
-            ErrorCode.VALIDATION_ERROR_CODE.name(),
-//            String.format("'%s': %s", error.getObjectName(), error.error.getDefaultMessage())))
-            error.toString()))
+            ErrorCode.VALIDATION_ERROR_CODE.name(), error.getDefaultMessage()))
         .collect(Collectors.toList());
   }
 

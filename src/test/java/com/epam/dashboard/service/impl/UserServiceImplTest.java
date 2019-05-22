@@ -1,7 +1,11 @@
 package com.epam.dashboard.service.impl;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -51,7 +55,7 @@ public class UserServiceImplTest {
 
     UserDto userDto = userService.findById(testUser.getId());
 
-    assertEquals(testUser.getId(), userDto.getId());
+    assertThat(userDto, hasProperty("id", is(equalTo(testUser.getId()))));
   }
 
   @Test
@@ -60,7 +64,7 @@ public class UserServiceImplTest {
 
     List<UserDto> userDTOs = userService.findAll();
 
-    assertEquals(testUser.getId(), userDTOs.get(0).getId());
+    assertThat(userDTOs, hasItem(hasProperty("id", is(testUser.getId()))));
   }
 
   @Test
@@ -82,7 +86,7 @@ public class UserServiceImplTest {
 
     UserDto userDto = userService.createUser(testUserDto);
 
-    assertEquals(testUserDto.getEmail(), userDto.getEmail());
+    assertThat(userDto, hasProperty("email", is(equalTo(testUserDto.getEmail()))));
     verify(repository).insert(any(User.class));
   }
 
@@ -93,7 +97,7 @@ public class UserServiceImplTest {
 
     UserDto userDto = userService.updateUser(testUserDto);
 
-    assertEquals(testUserDto.getId(), userDto.getId());
+    assertThat(userDto, hasProperty("id", is(equalTo(testUserDto.getId()))));
     verify(repository).save(any(User.class));
   }
 
@@ -114,7 +118,7 @@ public class UserServiceImplTest {
     User extractedUser = Whitebox.invokeMethod(userService,
         "findUserByIdWithValidation", testUser.getId());
 
-    assertEquals(testUser, extractedUser);
+    assertThat(extractedUser, is(equalTo(testUser)));
   }
 
   @Test(expected = InvalidIdException.class)

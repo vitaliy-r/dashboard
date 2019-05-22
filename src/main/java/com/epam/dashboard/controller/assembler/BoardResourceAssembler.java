@@ -43,7 +43,8 @@ public class BoardResourceAssembler extends ResourceAssemblerSupport<BoardDto, B
   }
 
   public Resources<BoardResource> toResource(List<BoardDto> boards) {
-    List<BoardResource> boardResources = boards.stream().map(this::toResource)
+    List<BoardResource> boardResources = boards.stream()
+        .map(this::toResource)
         .peek(resource -> resource.getLinks().remove(0))
         .collect(toList());
 

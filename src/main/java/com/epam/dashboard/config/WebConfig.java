@@ -8,11 +8,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+  private static final String SWAGGER_UI_URI = "/swagger-ui.html";
+
   @Override
   public void addViewControllers(ViewControllerRegistry registry) {
-    registry.addRedirectViewController("/", "/swagger-ui.html");
-    registry.addRedirectViewController("/swagger", "/swagger-ui.html");
-    registry.addRedirectViewController("/docs", "/swagger-ui.html");
+    registry.addRedirectViewController("/", SWAGGER_UI_URI);
+    registry.addRedirectViewController("/swagger", SWAGGER_UI_URI);
+    registry.addRedirectViewController("/docs", SWAGGER_UI_URI);
     registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
   }
 

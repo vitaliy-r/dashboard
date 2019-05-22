@@ -41,7 +41,8 @@ public class UserResourceAssembler extends ResourceAssemblerSupport<UserDto, Use
   }
 
   public Resources<UserResource> toResource(List<UserDto> users) {
-    List<UserResource> userResources = users.stream().map(this::toResource)
+    List<UserResource> userResources = users.stream()
+        .map(this::toResource)
         .peek(resource -> resource.getLinks().remove(0))
         .collect(toList());
 

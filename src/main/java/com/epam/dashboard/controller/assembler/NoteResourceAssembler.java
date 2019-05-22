@@ -45,7 +45,8 @@ public class NoteResourceAssembler extends ResourceAssemblerSupport<NoteDto, Not
   }
 
   public Resources<NoteResource> toResource(List<NoteDto> notes) {
-    List<NoteResource> noteResources = notes.stream().map(this::toResource)
+    List<NoteResource> noteResources = notes.stream()
+        .map(this::toResource)
         .peek(resource -> resource.getLinks().remove(0))
         .collect(toList());
 
