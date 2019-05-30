@@ -25,15 +25,13 @@ public class UserResourceAssembler extends ResourceAssemblerSupport<UserDto, Use
   public UserResource toResource(UserDto userDto) {
     UserResource resource = new UserResource(userDto);
 
-    Link self = new Link(ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString(),
-        Link.REL_SELF);
+    Link self = new Link(ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString(), Link.REL_SELF);
 
     Link get = linkTo(methodOn(UserController.class).getUser(userDto.getId())).withRel("get");
     Link getAll = linkTo(methodOn(UserController.class).getAllUsers()).withRel("getAll");
     Link create = linkTo(methodOn(UserController.class).createUser(null)).withRel("create");
     Link update = linkTo(methodOn(UserController.class).updateUser(null)).withRel("update");
-    Link delete = linkTo(methodOn(UserController.class).deleteById(userDto.getId()))
-        .withRel("delete");
+    Link delete = linkTo(methodOn(UserController.class).deleteById(userDto.getId())).withRel("delete");
 
     resource.add(self, get, getAll, create, update, delete);
 
@@ -47,8 +45,7 @@ public class UserResourceAssembler extends ResourceAssemblerSupport<UserDto, Use
         .collect(toList());
 
     Resources<UserResource> resources = new Resources<>(userResources);
-    resources.add(new Link(ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString(),
-        Link.REL_SELF));
+    resources.add(new Link(ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString(), Link.REL_SELF));
 
     return resources;
   }

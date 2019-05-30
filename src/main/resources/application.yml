@@ -4,3 +4,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/dashboard
+    rest:
+      defaultMediaType: application/json
+  hateoas:
+    use-hal-as-default-json-media-type: false

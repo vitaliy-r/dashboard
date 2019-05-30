@@ -25,16 +25,13 @@ public class BoardResourceAssembler extends ResourceAssemblerSupport<BoardDto, B
   public BoardResource toResource(BoardDto boardDto) {
     BoardResource resource = new BoardResource(boardDto);
 
-    Link self = new Link(ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString(),
-        Link.REL_SELF);
+    Link self = new Link(ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString(), Link.REL_SELF);
 
-    Link get = linkTo(methodOn(BoardController.class).getBoard(boardDto.getBoardId()))
-        .withRel("get");
+    Link get = linkTo(methodOn(BoardController.class).getBoard(boardDto.getBoardId())).withRel("get");
     Link getAll = linkTo(methodOn(BoardController.class).getAllBoards()).withRel("getAll");
     Link create = linkTo(methodOn(BoardController.class).createBoard(null)).withRel("create");
     Link update = linkTo(methodOn(BoardController.class).updateBoard(null)).withRel("update");
-    Link delete = linkTo(methodOn(BoardController.class).deleteBoard(boardDto.getBoardId()))
-        .withRel("delete");
+    Link delete = linkTo(methodOn(BoardController.class).deleteBoard(boardDto.getBoardId())).withRel("delete");
     Link deleteAll = linkTo(methodOn(BoardController.class).deleteAllBoards()).withRel("deleteAll");
 
     resource.add(self, get, getAll, create, update, delete, deleteAll);
@@ -49,8 +46,7 @@ public class BoardResourceAssembler extends ResourceAssemblerSupport<BoardDto, B
         .collect(toList());
 
     Resources<BoardResource> resources = new Resources<>(boardResources);
-    resources.add(new Link(ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString(),
-        Link.REL_SELF));
+    resources.add(new Link(ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString(), Link.REL_SELF));
 
     return resources;
   }

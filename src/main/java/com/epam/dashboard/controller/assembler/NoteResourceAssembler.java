@@ -25,19 +25,16 @@ public class NoteResourceAssembler extends ResourceAssemblerSupport<NoteDto, Not
   public NoteResource toResource(NoteDto noteDto) {
     NoteResource resource = new NoteResource(noteDto);
 
-    Link self = new Link(ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString(),
-        Link.REL_SELF);
+    Link self = new Link(ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString(), Link.REL_SELF);
 
-    Link get = linkTo(methodOn(BoardController.class)
-        .getNote(noteDto.getBoardId(), noteDto.getNoteId())).withRel("get");
-    Link getAll = linkTo(methodOn(BoardController.class).getAllNotes(noteDto.getBoardId()))
-        .withRel("getAll");
+    Link get = linkTo(methodOn(BoardController.class).getNote(noteDto.getBoardId(), noteDto.getNoteId()))
+            .withRel("get");
+    Link getAll = linkTo(methodOn(BoardController.class).getAllNotes(noteDto.getBoardId())).withRel("getAll");
     Link create = linkTo(methodOn(BoardController.class).createNote(null)).withRel("create");
     Link update = linkTo(methodOn(BoardController.class).updateNote(null)).withRel("update");
     Link delete = linkTo(methodOn(BoardController.class).deleteNote(noteDto.getBoardId(),
         noteDto.getNoteId())).withRel("delete");
-    Link deleteAll = linkTo(methodOn(BoardController.class).deleteAllNotes(noteDto.getBoardId()))
-        .withRel("deleteAll");
+    Link deleteAll = linkTo(methodOn(BoardController.class).deleteAllNotes(noteDto.getBoardId())).withRel("deleteAll");
 
     resource.add(self, get, getAll, create, update, delete, deleteAll);
 
@@ -51,8 +48,7 @@ public class NoteResourceAssembler extends ResourceAssemblerSupport<NoteDto, Not
         .collect(toList());
 
     Resources<NoteResource> resources = new Resources<>(noteResources);
-    resources.add(new Link(ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString(),
-        Link.REL_SELF));
+    resources.add(new Link(ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString(), Link.REL_SELF));
 
     return resources;
   }
